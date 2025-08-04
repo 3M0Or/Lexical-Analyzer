@@ -9,7 +9,6 @@ char nextChar;
 int charIndex = 0, lineNumber = 1;
 string inputBuffer;
 
-
 void getChar()
 {
     int len = inputBuffer.length();
@@ -62,17 +61,14 @@ struct Token
     int line;
 };
 
-
-vector<string> reservedWords = { "if", "else", "while", "return", "int", "float", "void" };
-
+vector<string> reservedWords = {"if", "else", "while", "return", "int", "float", "void"};
 
 bool isReservedWord(const string token)
 {
     return find(reservedWords.begin(), reservedWords.end(), token) != reservedWords.end();
 }
 
-
-TokenCode lookup(const string& token)
+TokenCode lookup(const string &token)
 {
     if (token == ";")
         return TokenCode::SEMICOLON;
@@ -121,16 +117,16 @@ vector<Token> tokenize(const string input)
         getNonBlank();
         current.clear();
 
-        if (isalpha(nextChar)) 
+        if (isalpha(nextChar))
         {
             while (isalpha(nextChar) || isdigit(nextChar))
             {
                 current += nextChar;
                 getChar();
             }
-            tokens.push_back({ lookup(current), current, lineNumber });
+            tokens.push_back({lookup(current), current, lineNumber});
         }
-        else if (isdigit(nextChar)) 
+        else if (isdigit(nextChar))
         {
             while (isdigit(nextChar))
             {
@@ -146,11 +142,11 @@ vector<Token> tokenize(const string input)
                     current += nextChar;
                     getChar();
                 }
-                tokens.push_back({ TokenCode::FLOAT_LIT, current, lineNumber });
+                tokens.push_back({TokenCode::FLOAT_LIT, current, lineNumber});
             }
             else
             {
-                tokens.push_back({ TokenCode::INT_LIT, current, lineNumber });
+                tokens.push_back({TokenCode::INT_LIT, current, lineNumber});
             }
         }
         else if (ispunct(nextChar))
@@ -167,12 +163,61 @@ vector<Token> tokenize(const string input)
                 current += nextChar;
             }
 
-            tokens.push_back({ lookup(current), current, lineNumber });
+            tokens.push_back({lookup(current), current, lineNumber});
             getChar();
         }
     }
 
     return tokens;
+}
+
+string tokenCodeToString(TokenCode code)
+{
+    switch (code)
+    {
+    case TokenCode::START:
+        return "START";
+    case TokenCode::END:
+        return "END";
+    case TokenCode::SEMICOLON:
+        return "SEMICOLON";
+    case TokenCode::RESERVED_WORD:
+        return "RESERVED_WORD";
+    case TokenCode::IDENTIFIER:
+        return "IDENTIFIER";
+    case TokenCode::UNKNOWN:
+        return "UNKNOWN";
+    case TokenCode::INT_LIT:
+        return "INT_LIT";
+    case TokenCode::FLOAT_LIT:
+        return "FLOAT_LIT";
+    case TokenCode::LETTER:
+        return "LETTER";
+    case TokenCode::ASSIGN_OP:
+        return "ASSIGN_OP";
+    case TokenCode::ADD_OP:
+        return "ADD_OP";
+    case TokenCode::SUB_OP:
+        return "SUB_OP";
+    case TokenCode::DIV_OP:
+        return "DIV_OP";
+    case TokenCode::MULTI_OP:
+        return "MULTI_OP";
+    case TokenCode::LEFT_PAREN:
+        return "LEFT_PAREN";
+    case TokenCode::RIGHT_PAREN:
+        return "RIGHT_PAREN";
+    case TokenCode::EQUAL_OP:
+        return "EQUAL_OP";
+    case TokenCode::NOT_EQUAL:
+        return "NOT_EQUAL";
+    case TokenCode::LESS_EQ:
+        return "LESS_EQ";
+    case TokenCode::GREATER_EQ:
+        return "GREATER_EQ";
+    default:
+        return "UNKNOWN";
+    }
 }
 
 int main()
@@ -184,14 +229,14 @@ int main()
     auto tokens = tokenize(input);
 
     cout << "--------------------------------" << endl;
-    cout << "| Lexeme\t| Token\t| Line |" << endl;
+    cout << "| Lexeme | Token\t| Line" << endl;
     cout << "--------------------------------" << endl;
 
     for (auto token : tokens)
     {
         cout << ctr << ": "
-             << "\t| " << token.value
-             << "\t| " << static_cast<int>(token.type)
+             << token.value
+             << "\t | " << tokenCodeToString(token.type)
              << "\t| " << token.line
              << endl;
         ctr++;
@@ -199,3 +244,4 @@ int main()
 
     cin >> input;
 }
+ 
